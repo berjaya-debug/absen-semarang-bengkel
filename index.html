@@ -495,6 +495,23 @@
       white-space: nowrap;
     }
 
+    .footer-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 11px;
+      color: var(--muted); /* Menggunakan warna abu-abu yang sudah ada di variabel root Anda */
+      text-decoration: none;
+      font-family: 'Nunito', sans-serif;
+      opacity: 0.7;
+    }
+    
+    .footer-link:hover {
+      text-decoration: underline;
+      opacity: 1;
+    }
+
   </style>
 </head>
 <body>
@@ -919,6 +936,13 @@ function sembunyikanLoading() {
   btnKirim.disabled = false;
 }
 </script>
+
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_63cbGmBGfHqUL8oq2noSGS6a5kYesobaZnRIPIBn9IOouA/viewform?usp=publish-editor" 
+     target="_blank" 
+     class="footer-link">
+     Pengajuan Cuti
+  </a>
+
 
 <!-- PWA Install Banner -->
 <div id="installBanner">
