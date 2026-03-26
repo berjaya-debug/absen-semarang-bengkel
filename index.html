@@ -623,6 +623,32 @@ window.onload = function () {
   ambilGPSBackground();
 };
 
+  document.addEventListener('DOMContentLoaded', function() {
+  const sekarang = new Date();
+  const hariIni = sekarang.getDay(); // 5 adalah Jumat
+  const displayJam = document.getElementById('jamTeksDisplay');
+
+  if (hariIni === 5) {
+    displayJam.innerText = "11.30 – 13.00";
+  } else {
+    displayJam.innerText = "12.00 – 13.00";
+  }
+});
+
+// Pastikan fungsi pilihStatus Anda juga memunculkan breakInfo
+function pilihStatus(status) {
+  const breakInfo = document.getElementById('breakInfo');
+  
+  // Tampilkan info hanya jika memilih ISTIRAHAT atau KEMBALI
+  if (status === 'ISTIRAHAT' || status === 'KEMBALI') {
+    breakInfo.style.display = 'block';
+  } else {
+    breakInfo.style.display = 'none';
+  }
+  
+  // Logika pilihStatus Anda yang lain...
+}
+
 /* ── JSONP ──────────────────────────────────────────────── */
 var jsonpCounter = 0;
 function jsonpFetch(params, onSuccess, onError) {
