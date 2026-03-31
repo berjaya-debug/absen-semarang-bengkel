@@ -2,16 +2,10 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Absensi Otonix Cibubur</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#3a0ca3">
   <meta name="theme-color" content="#4b0082">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AbsenBengkel">
-  <link rel="apple-touch-icon" href="logo-oto.png">
   <meta name="apple-mobile-web-app-title" content="Absensi Semarang">
   <meta name="application-name" content="Absensi Semarang">
   <link rel="manifest" href="manifest.json">
@@ -19,60 +13,13 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Absensi Otonix Semarang</title>
-  <!-- FIX 1: SweetAlert2 dimuat PERTAMA sebelum script yang memakainya -->
+
   <!-- SweetAlert2 HARUS dimuat pertama sebelum script apapun -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      setTimeout(() => {
-        Swal.fire({
-          title: 'Pasang Aplikasi?',
-          text: "Instal aplikasi di HP ! melalui Google Chrome",
-          icon: 'info',
-          showCancelButton: true,
-          confirmButtonColor: '#3a0ca3',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Ya, Instal Sekarang',
-          cancelButtonText: 'Nanti saja'
-        }).then((result) => {
-          // FIX 2: Tambah null guard untuk deferredPrompt
-          if (result.isConfirmed && deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-              if (choiceResult.outcome === 'accepted') {
-                console.log('User menginstal aplikasi');
-              }
-              deferredPrompt = null;
-            });
-          }
-        });
-      }, 3000);
-    });
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(reg => console.log('SW terdaftar!'))
-          .catch(err => console.error('SW gagal:', err));
-      });
-    }
-  </script>
+
   <style>
     :root {
-      --primary:   #4b0082;
-      --mid:       #6a0dad;
-      --secondary: #3f51b5;
-      --accent:    #FFD700;
-      --bg:        #0e0018;
-      --surface:   #1a0030;
-      --surface2:  #240040;
-      --border:    rgba(123,47,191,0.35);
-      --text:      #f0e8ff;
-      --muted:     rgba(200,180,255,0.55);
       --purple-deep:   #3d0099;
       --purple-mid:    #6a00d4;
       --purple-light:  #9333ea;
@@ -93,23 +40,22 @@
       --shadow-md:     0 8px 32px rgba(109,0,212,0.12);
       --shadow-lg:     0 20px 60px rgba(109,0,212,0.16);
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0 0 40px;
       padding: 0 0 48px;
       color: var(--text);
       overflow-x: hidden;
       position: relative;
     }
-    /* ── BACKGROUND ORBS ─────────────────────────────────── */
-    .bg-orb {
+
     body::before {
       content: '';
       position: fixed;
@@ -117,16 +63,9 @@
       width: 400px; height: 400px;
       background: radial-gradient(circle, rgba(147,51,234,0.12) 0%, transparent 70%);
       border-radius: 50%;
-      filter: blur(80px);
       pointer-events: none;
       z-index: 0;
-      animation: orbFloat 8s ease-in-out infinite alternate;
     }
-    .bg-orb-1 {
-      width: 340px; height: 340px;
-      background: radial-gradient(circle, rgba(75,0,130,0.55) 0%, transparent 70%);
-      top: -80px; left: -80px;
-      animation-delay: 0s;
     body::after {
       content: '';
       position: fixed;
@@ -137,41 +76,22 @@
       pointer-events: none;
       z-index: 0;
     }
-    .bg-orb-2 {
-      width: 280px; height: 280px;
-      background: radial-gradient(circle, rgba(63,81,181,0.4) 0%, transparent 70%);
-      top: 30%; right: -60px;
-      animation-delay: -3s;
-    }
-    .bg-orb-3 {
-      width: 200px; height: 200px;
-      background: radial-gradient(circle, rgba(106,13,173,0.5) 0%, transparent 70%);
-      bottom: 10%; left: 10%;
-      animation-delay: -5s;
-    }
-    @keyframes orbFloat {
-      from { transform: translate(0, 0) scale(1); }
-      to   { transform: translate(20px, 30px) scale(1.1); }
-    }
-    /* ── HEADER ──────────────────────────────────────────── */
+
     /* ── HEADER ─────────────────────────────── */
     .header {
       width: 100%;
-      padding: 32px 24px 28px;
       max-width: 460px;
       padding: 36px 24px 28px;
       text-align: center;
       position: relative;
       z-index: 1;
-      animation: fadeDown 0.6s ease both;
       animation: slideDown 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
       gap: 8px;
     }
-    .header-absensi {
+
     .header-badge {
       display: inline-flex;
       align-items: center;
@@ -179,80 +99,59 @@
       background: linear-gradient(135deg, var(--purple-deep), var(--purple-light));
       color: white;
       font-family: 'Syne', sans-serif;
-      font-size: 13px;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 6px;
       letter-spacing: 4px;
       text-transform: uppercase;
-      color: var(--muted);
       padding: 5px 14px;
       border-radius: 99px;
       margin-bottom: 4px;
     }
+
     .header-logo-img {
-      width: 220px;
-      max-width: 70%;
       width: 240px;
       max-width: 72%;
       height: auto;
       object-fit: contain;
-      animation: logoSlide 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
-      filter: drop-shadow(0 0 18px rgba(255,215,0,0.18));
       display: block;
     }
-    @keyframes logoSlide {
-      from { transform: translateY(-16px) scale(0.9); opacity: 0; }
-      to   { transform: translateY(0) scale(1); opacity: 1; }
-    }
-    .header-sub {
+
     .header-location {
       font-family: 'Syne', sans-serif;
-      font-size: 11px;
       font-size: 13px;
       font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 3px;
       color: var(--text-muted);
       letter-spacing: 2px;
       text-transform: uppercase;
     }
-    .header-sub span { color: var(--accent); }
     .header-location span { color: var(--purple-light); }
-    /* ── CARD ────────────────────────────────────────────── */
+
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-24px); }
       to   { opacity: 1; transform: none; }
     }
+
     /* ── CARD ────────────────────────────────── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 24px;
       border-radius: 28px;
       padding: 28px 24px;
       width: calc(100% - 32px);
       max-width: 420px;
-      position: relative; z-index: 1;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(123,47,191,0.15);
-      animation: fadeUp 0.6s ease 0.2s both;
       position: relative;
       z-index: 1;
       box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.8) inset;
       animation: cardUp 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
     }
-    @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:none; } }
-    @keyframes fadeUp   { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:none; } }
-    /* ── SECTION LABEL ───────────────────────────────────── */
+
     @keyframes cardUp {
       from { opacity: 0; transform: translateY(28px); }
       to   { opacity: 1; transform: none; }
     }
+
     /* ── SECTION LABEL ──────────────────────── */
     .section-label {
-      font-size: 10px; font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase; letter-spacing: 1.5px;
       font-size: 10px;
       font-weight: 700;
       color: var(--text-light);
@@ -260,14 +159,12 @@
       letter-spacing: 2px;
       margin-bottom: 8px;
     }
-    /* ── SELECT ──────────────────────────────────────────── */
-    .select-wrap { position: relative; margin-bottom: 20px; }
+
     /* ── SELECT ──────────────────────────────── */
     .select-wrap { position: relative; margin-bottom: 22px; }
     .select-wrap::after {
       content: '▾';
       position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-      color: var(--muted); pointer-events: none; font-size: 14px;
       color: var(--purple-light); pointer-events: none; font-size: 14px;
     }
     select {
@@ -278,25 +175,17 @@
       border-radius: 14px;
       color: var(--text);
       font-size: 14px; font-weight: 600;
-      font-family: 'Plus Jakarta Sans', sans-serif;
       font-family: 'DM Sans', sans-serif;
       outline: none; cursor: pointer;
       appearance: none; -webkit-appearance: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     select:focus {
-      border-color: var(--mid);
-      box-shadow: 0 0 0 3px rgba(106,13,173,0.25);
       border-color: var(--purple-light);
       box-shadow: 0 0 0 4px rgba(147,51,234,0.12);
     }
-    select option { background: #1a0030; color: var(--text); }
     select option { background: #fff; color: var(--text); }
-    /* ── STATUS TOGGLE ───────────────────────────────────── */
-    .status-wrap { margin-bottom: 20px; }
-    .status-container {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px;
+
     /* ── STATUS GRID ─────────────────────────── */
     .status-wrap { margin-bottom: 22px; }
     .status-grid {
@@ -305,43 +194,30 @@
       gap: 8px;
     }
     .status-opt {
-      padding: 14px 10px;
       padding: 13px 8px;
       border: 1.5px solid var(--border);
       border-radius: 14px;
       text-align: center;
       cursor: pointer;
-      font-weight: 700; font-size: 13px;
-      color: var(--muted);
       font-weight: 700;
       font-size: 12px;
       color: var(--text-light);
       background: var(--surface2);
-      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
       transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
       user-select: none;
-      position: relative; overflow: hidden;
       position: relative;
       overflow: hidden;
       line-height: 1.4;
     }
-    .status-opt::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      opacity: 0; transition: opacity 0.25s;
-    }
-    .status-opt span { position: relative; z-index: 1; }
     .status-opt .opt-emoji { font-size: 18px; display: block; margin-bottom: 3px; }
     .status-opt .opt-label { font-size: 11px; letter-spacing: 0.5px; }
+
     .status-opt.active {
       border-color: transparent;
       color: white;
-      box-shadow: 0 4px 20px rgba(75,0,130,0.5);
       box-shadow: 0 6px 20px rgba(109,0,212,0.3);
       transform: translateY(-2px);
     }
-    .status-opt.active::before { opacity: 1; }
     .status-opt.active::before {
       content: '';
       position: absolute; inset: 0;
@@ -350,15 +226,14 @@
     }
     .status-opt.active .opt-emoji,
     .status-opt.active .opt-label { position: relative; z-index: 1; }
-    /* ── TIPE SELECT ─────────────────────────────────────── */
-    .tipe-wrap { margin-bottom: 20px; }
+
     .status-opt.active.color-istirahat::before {
       background: linear-gradient(135deg, #b45309, var(--accent-orange));
     }
     .status-opt.active.color-kembali::before {
       background: linear-gradient(135deg, #065f46, #10b981);
     }
-    /* ── CAMERA / PREVIEW ────────────────────────────────── */
+
     /* ── ISTIRAHAT INFO BOX ──────────────────── */
     .break-info {
       margin-top: 8px;
@@ -373,6 +248,7 @@
       align-items: center;
       gap: 8px;
     }
+
     /* ── STORING TOGGLE ──────────────────────── */
     .storing-wrap { margin-bottom: 22px; }
     .storing-box {
@@ -412,11 +288,11 @@
     .storing-label { font-weight: 600; font-size: 13px; color: var(--text-muted); transition: color 0.2s; flex: 1; }
     .storing-box.active .storing-label { color: #92400e; }
     .storing-icon { font-size: 20px; }
+
     /* ── CAMERA ──────────────────────────────── */
     .camera-wrap { margin-bottom: 20px; }
     #previewContainer {
       width: 100%; height: 210px;
-      border: 2px dashed var(--border);
       border: 2px dashed var(--border-strong);
       border-radius: 18px;
       display: flex; align-items: center; justify-content: center;
@@ -426,44 +302,33 @@
       position: relative;
     }
     #previewContainer:hover {
-      border-color: var(--mid);
-      box-shadow: 0 0 0 4px rgba(106,13,173,0.15);
       border-color: var(--purple-light);
       box-shadow: 0 0 0 4px rgba(147,51,234,0.08);
     }
-    #previewContainer.has-photo { border-style: solid; border-color: var(--mid); }
     #previewContainer.has-photo { border-style: solid; border-color: var(--purple-light); }
     #imgPreview { width: 100%; height: 100%; object-fit: cover; display: none; }
     #placeholderText {
-      text-align: center; color: var(--muted);
       text-align: center; color: var(--text-light);
       pointer-events: none;
     }
     .camera-icon-wrap {
       width: 64px; height: 64px;
-      background: rgba(75,0,130,0.3);
       background: linear-gradient(135deg, var(--purple-pale), var(--purple-muted));
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 28px; margin: 0 auto 10px;
       border: 1px solid var(--border);
     }
-    #placeholderText b { font-size: 13px; color: var(--text); display: block; margin-bottom: 4px; }
-    #placeholderText small { font-size: 11px; }
     #placeholderText b { font-size: 13px; color: var(--text); display: block; margin-bottom: 4px; font-weight: 600; }
     #placeholderText small { font-size: 11px; color: var(--text-light); }
     .retake-overlay {
       position: absolute; inset: 0;
-      background: rgba(0,0,0,0.55);
       background: rgba(61,0,153,0.55);
       display: none; align-items: center; justify-content: center;
-      border-radius: 16px;
       border-radius: 16px; backdrop-filter: blur(2px);
     }
     #previewContainer.has-photo:hover .retake-overlay { display: flex; }
     .retake-btn {
-      background: rgba(255,255,255,0.15);
-      border: 1.5px solid rgba(255,255,255,0.4);
       background: rgba(255,255,255,0.2);
       border: 1.5px solid rgba(255,255,255,0.5);
       color: white; padding: 10px 20px;
@@ -471,7 +336,7 @@
       backdrop-filter: blur(8px);
       font-family: 'DM Sans', sans-serif;
     }
-    /* ── GPS STATUS ───────────────────────────────────────── */
+
     /* ── GPS BAR ─────────────────────────────── */
     .gps-bar {
       display: flex; align-items: center; gap: 8px;
@@ -481,48 +346,34 @@
       padding: 10px 14px;
       margin-bottom: 20px;
       font-size: 12px; font-weight: 600;
-      color: var(--muted);
       color: var(--text-light);
       transition: border-color 0.3s;
     }
-    .gps-bar.locked { border-color: rgba(50,205,50,0.5); color: #90ee90; }
-    .gps-bar.error  { border-color: rgba(255,80,80,0.5);  color: #ff8080; }
     .gps-bar.locked { border-color: rgba(16,185,129,0.4); color: #065f46; background: #f0fdf4; }
     .gps-bar.error  { border-color: rgba(239,68,68,0.4);  color: #991b1b; background: #fef2f2; }
     .gps-dot {
       width: 8px; height: 8px; border-radius: 50%;
-      background: var(--muted); flex-shrink: 0;
       background: var(--text-light); flex-shrink: 0;
       transition: background 0.3s;
     }
-    .gps-bar.locked .gps-dot { background: #90ee90; animation: pulse 2s infinite; }
-    .gps-bar.error  .gps-dot { background: #ff8080; }
     .gps-bar.locked .gps-dot { background: #10b981; animation: pulse 2s infinite; }
     .gps-bar.error  .gps-dot { background: #ef4444; }
     @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(144,238,144,0.5); }
-      50%      { box-shadow: 0 0 0 6px rgba(144,238,144,0); }
       0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
       50%      { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
     }
-    /* ── SUBMIT BUTTON ────────────────────────────────────── */
+
     /* ── SUBMIT BUTTON ───────────────────────── */
     #btnKirim {
       width: 100%;
       padding: 16px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       background: linear-gradient(135deg, var(--purple-deep) 0%, var(--purple-light) 100%);
       color: white;
       border: none; border-radius: 14px;
-      font-size: 15px; font-weight: 800;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      letter-spacing: 1px; text-transform: uppercase;
       font-size: 15px; font-weight: 700;
       font-family: 'DM Sans', sans-serif;
       letter-spacing: 0.5px;
       cursor: pointer;
-      box-shadow: 0 6px 24px rgba(75,0,130,0.5);
-      transition: all 0.25s;
       box-shadow: 0 8px 24px rgba(61,0,153,0.35), 0 0 0 1px rgba(255,255,255,0.15) inset;
       transition: all 0.22s;
       position: relative; overflow: hidden;
@@ -530,29 +381,24 @@
     #btnKirim::after {
       content: '';
       position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
       background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
       opacity: 0; transition: opacity 0.2s;
     }
-    #btnKirim:hover::after  { opacity: 1; }
-    #btnKirim:active        { transform: scale(0.97); }
-    #btnKirim:disabled      { background: #333; box-shadow: none; cursor: not-allowed; color: #666; }
     #btnKirim:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(61,0,153,0.4); }
     #btnKirim:hover::after { opacity: 1; }
     #btnKirim:active { transform: scale(0.98); }
     #btnKirim:disabled { background: #d1d5db; box-shadow: none; cursor: not-allowed; color: #9ca3af; transform: none; }
-    /* ── LOADING OVERLAY ─────────────────────────────────── */
+
     /* ── DIVIDER ─────────────────────────────── */
     .divider {
       height: 1px;
       background: linear-gradient(to right, transparent, var(--border-strong), transparent);
       margin: 20px 0;
     }
+
     /* ── LOADING OVERLAY ─────────────────────── */
     #loadingOverlay {
       display: none; position: fixed; inset: 0;
-      background: rgba(10,0,20,0.85);
-      backdrop-filter: blur(6px);
       background: rgba(248,245,255,0.85);
       backdrop-filter: blur(8px);
       z-index: 999;
@@ -566,14 +412,10 @@
       border-radius: 24px;
       padding: 40px 36px;
       text-align: center;
-      animation: fadeUp 0.3s ease both;
       box-shadow: var(--shadow-lg);
     }
     .spinner {
       width: 52px; height: 52px;
-      border: 4px solid rgba(123,47,191,0.2);
-      border-top-color: var(--mid);
-      border-right-color: var(--accent);
       border: 4px solid var(--purple-pale);
       border-top-color: var(--purple-deep);
       border-right-color: var(--purple-light);
@@ -587,13 +429,8 @@
       font-size: 18px; font-weight: 700; color: var(--text);
       margin-bottom: 6px;
     }
-    #loadingText { font-size: 13px; color: var(--muted); }
     #loadingText { font-size: 13px; color: var(--text-light); }
-    /* ── DIVIDER ─────────────────────────────────────────── */
-    .divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--border), transparent);
-      margin: 20px 0;
+
     /* ── PWA INSTALL BANNER ──────────────────── */
     #installBanner {
       display: none;
@@ -634,68 +471,21 @@
       font-size: 11px; cursor: pointer; font-family: inherit;
       white-space: nowrap;
     }
-    /* FIX 3: CSS comment yang rusak diperbaiki */
-    /* pengajuan cuti */
+
     .footer-link {
       display: block;
       text-align: center;
       margin-top: 20px;
-      margin-bottom: 20px;
       font-size: 11px;
-      color: var(--muted);
       color: var(--text-light);
       text-decoration: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
       opacity: 0.7;
-    }
-    .footer-link:hover {
-      text-decoration: underline;
-      opacity: 1;
-    }
-    /* ── CAMERA FULLSCREEN ───────────────────────────────── */
-    #cameraOverlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: #000;
-      z-index: 9000;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-    }
-    #cameraOverlay.show { display: flex; }
-    #cameraVideo {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-    }
-    .cam-controls {
-      position: relative; z-index: 1;
-      display: flex; gap: 24px; align-items: center;
-      padding: 32px;
-    }
-    .cam-btn {
-      background: rgba(255,255,255,0.15);
-      border: 2px solid rgba(255,255,255,0.5);
-      color: white; border-radius: 99px;
-      font-size: 13px; font-weight: 700;
-      padding: 12px 24px; cursor: pointer;
-      backdrop-filter: blur(8px);
-    }
-    .cam-btn-snap {
-      width: 68px; height: 68px;
-      border-radius: 50%; padding: 0;
-      background: white; border: 4px solid rgba(255,255,255,0.5);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px;
     }
     .footer-link:hover { text-decoration: underline; opacity: 1; }
   </style>
 </head>
 <body>
-<!-- Background orbs -->
-<div class="bg-orb bg-orb-1"></div>
-<div class="bg-orb bg-orb-2"></div>
-<div class="bg-orb bg-orb-3"></div>
+
 <!-- Loading overlay -->
 <div id="loadingOverlay">
   <div class="loading-card">
@@ -704,51 +494,35 @@
     <div id="loadingText">Mengirim data...</div>
   </div>
 </div>
-<!-- Camera fullscreen overlay -->
-<div id="cameraOverlay">
-  <video id="cameraVideo" autoplay playsinline muted></video>
-  <div class="cam-controls">
-    <button class="cam-btn" id="btnBatal">✕ Batal</button>
-    <button class="cam-btn cam-btn-snap" id="btnSnap">📸</button>
-    <button class="cam-btn" id="btnFlip">🔄 Balik</button>
-  </div>
-</div>
+
 <!-- Header -->
 <div class="header">
-  <div class="header-absensi">ABSENSI</div>
-  <img class="header-logo-img" src="logo-oto.png" alt="Otonix Cibubur">
-  <div class="header-sub">Otonix <span>Cibubur</span></div>
   <div class="header-badge">✦ Semarang</div>
   <div style="padding:8px 0;">
     <img class="header-logo-img" src="icons/icon-512x512.png" alt="Otonix Logo" onerror="this.style.display='none'">
   </div>
   <div class="header-location">by · <span>Berjaya Group</span></div>
 </div>
-<!-- Main Card -->
+
 <!-- Main card -->
 <div class="card">
+
   <!-- Nama Staff -->
   <div class="section-label">👤 Nama Staff</div>
   <div class="select-wrap">
-    <select id="selectNama">
     <select id="namaStaff">
       <option value="">— Memuat daftar staff... —</option>
     </select>
   </div>
+
   <!-- Status -->
-  <div class="section-label">📋 Status Absen</div>
   <div class="status-wrap">
-    <div class="status-container">
-      <div class="status-opt active" id="optHadir">
-        <span>🟢 HADIR</span>
     <div class="section-label">📌 Status Kehadiran</div>
     <div class="status-grid">
       <div class="status-opt active" id="optHadir" onclick="pilihStatus('HADIR')">
         <span class="opt-emoji">✅</span>
         <span class="opt-label">HADIR</span>
       </div>
-      <div class="status-opt" id="optPulang">
-        <span>🔴 PULANG</span>
       <div class="status-opt" id="optPulang" onclick="pilihStatus('PULANG')">
         <span class="opt-emoji">🏠</span>
         <span class="opt-label">PULANG</span>
@@ -766,15 +540,7 @@
       ⏰ Jam istirahat: <strong id="jamTeksDisplay">11.30 – 13.00</strong> WIB
     </div>
   </div>
-  <!-- Tipe -->
-  <div class="section-label">🔧 Tipe Kehadiran</div>
-  <div class="tipe-wrap">
-    <div class="select-wrap">
-      <select id="selectTipe">
-        <option value="BENGKEL">🏠 BENGKEL (Normal)</option>
-        <option value="STORING">🚗 STORING (Di Luar Bengkel)</option>
-        <option value="STORING MENDADAK">⚡ STORING MENDADAK (Dipanggil Balik)</option>
-      </select>
+
   <!-- Storing toggle -->
   <div class="storing-wrap">
     <div class="section-label">📍 Lokasi Kerja</div>
@@ -785,47 +551,42 @@
       <input type="checkbox" id="isStoring" style="display:none">
     </div>
   </div>
-  <!-- Foto Selfie -->
-  <div class="section-label">📷 Foto Selfie</div>
+
   <div class="divider"></div>
+
   <!-- Camera -->
   <div class="camera-wrap">
-    <div id="previewContainer">
-      <img id="imgPreview" alt="Foto Absen">
     <div class="section-label">📷 Foto Absensi</div>
     <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
     <div id="previewContainer" onclick="document.getElementById('cameraInput').click()">
       <div id="placeholderText">
-        <div class="camera-icon-wrap">📸</div>
-        <b>Tap untuk Ambil Foto</b>
-        <small>Foto selfie diperlukan untuk verifikasi</small>
         <div class="camera-icon-wrap">📷</div>
         <b>Ketuk untuk Foto</b>
         <small>Tampilkan wajah &amp; lokasi</small>
       </div>
       <img id="imgPreview" alt="preview foto absen">
       <div class="retake-overlay">
-        <button class="retake-btn">🔄 Ambil Ulang</button>
         <div class="retake-btn">🔄 Foto Ulang</div>
       </div>
     </div>
   </div>
-  <!-- GPS -->
+
   <!-- GPS status -->
   <div class="gps-bar" id="gpsBar">
     <div class="gps-dot" id="gpsDot"></div>
-    <span id="gpsText">Mencari lokasi GPS...</span>
     <span id="gpsStatus">Menunggu GPS...</span>
   </div>
+
   <!-- Submit -->
-  <button id="btnKirim">🚀 Kirim Absensi</button>
   <button id="btnKirim" onclick="submitAbsensi()">🚀 Kirim Absensi</button>
+
   <div class="divider"></div>
-  <!-- Footer Link -->
-  <a class="footer-link" href="#" id="linkCuti">📝 Ajukan Cuti / Izin</a>
+
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_63cbGmBGfHqUL8oq2noSGS6a5kYesobaZnRIPIBn9IOouA/viewform?usp=publish-editor"
      target="_blank" class="footer-link">📋 Pengajuan Cuti</a>
+
 </div>
+
 <!-- PWA Install Banner -->
 <div id="installBanner">
   <div class="install-icon">📱</div>
@@ -838,102 +599,37 @@
     <button id="btnInstallClose">Nanti</button>
   </div>
 </div>
+
 <script>
-  // ──────────────────────────────────────────────────────
-  //  KONFIGURASI — Ganti dengan URL deployment GAS Anda
-  // ──────────────────────────────────────────────────────
-  const GAS_URL = 'https://script.google.com/macros/s/GANTI_DENGAN_SCRIPT_ID_ANDA/exec';
 // ================================================================
 //  KONFIGURASI — Ganti dengan URL deployment terbaru Anda
 // ================================================================
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbJoAx6W_uCCoRh0g7LtFc0FR_Tak1P_LcSi9W3x2RL36b6vuMRIgRnicdHTLuavs-iw/exec";
-  // ── STATE ──────────────────────────────────────────────
-  let currentLat        = null;
-  let currentLon        = null;
-  let capturedImage     = null;   // base64 string
-  let selectedStatus    = 'HADIR';
-  let cameraStream      = null;
-  let facingMode        = 'user'; // 'user' = depan, 'environment' = belakang
+
 // ── STATE ──────────────────────────────────────────────────────
 var base64Foto   = null;
 var statusAbsen  = "HADIR";
 var koordinatGPS = null;
 var gpsLoading   = false;
 var gpsWatchId   = null;
-  // ── ELEMENTS ───────────────────────────────────────────
-  const loadingOverlay  = document.getElementById('loadingOverlay');
-  const loadingText     = document.getElementById('loadingText');
-  const selectNama      = document.getElementById('selectNama');
-  const selectTipe      = document.getElementById('selectTipe');
-  const optHadir        = document.getElementById('optHadir');
-  const optPulang       = document.getElementById('optPulang');
-  const previewContainer= document.getElementById('previewContainer');
-  const imgPreview      = document.getElementById('imgPreview');
-  const placeholderText = document.getElementById('placeholderText');
-  const gpsBar          = document.getElementById('gpsBar');
-  const gpsText         = document.getElementById('gpsText');
-  const gpsDot          = document.getElementById('gpsDot');
-  const btnKirim        = document.getElementById('btnKirim');
-  const cameraOverlay   = document.getElementById('cameraOverlay');
-  const cameraVideo     = document.getElementById('cameraVideo');
-  const btnBatal        = document.getElementById('btnBatal');
-  const btnSnap         = document.getElementById('btnSnap');
-  const btnFlip         = document.getElementById('btnFlip');
+
 // ── ELEMENTS ───────────────────────────────────────────────────
 var namaSelect = document.getElementById('namaStaff');
 var btnKirim   = document.getElementById('btnKirim');
-  // ── JSONP HELPER ───────────────────────────────────────
-  function jsonpFetch(url) {
-    return new Promise((resolve, reject) => {
-      const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-      const script = document.createElement('script');
-      window[cbName] = (data) => {
-        delete window[cbName];
-        if (document.head.contains(script)) document.head.removeChild(script);
-        resolve(data);
-      };
-      script.onerror = () => {
-        delete window[cbName];
-        if (document.head.contains(script)) document.head.removeChild(script);
-        reject(new Error('JSONP gagal'));
-      };
-      const sep = url.includes('?') ? '&' : '?';
-      script.src = url + sep + 'callback=' + cbName;
-      document.head.appendChild(script);
-    });
-  }
+
 // ================================================================
 //  INIT — Satu titik inisialisasi, tidak ada duplikasi
 // ================================================================
 window.addEventListener('load', function () {
   // Set teks jam istirahat
   document.getElementById('jamTeksDisplay').textContent = "11.30 – 13.00";
-  // ── LOAD STAFF LIST ────────────────────────────────────
-  async function loadStaff() {
-    try {
-      const data = await jsonpFetch(GAS_URL + '?action=getStaffList');
-      selectNama.innerHTML = '<option value="">— Pilih Nama Staff —</option>';
-      data.forEach(nama => {
-        const opt = document.createElement('option');
-        opt.value = nama;
-        opt.textContent = nama;
-        selectNama.appendChild(opt);
-      });
-    } catch (err) {
-      selectNama.innerHTML = '<option value="">⚠ Gagal memuat — refresh halaman</option>';
-      console.error('Gagal load staff:', err);
+
   // Load daftar staff via JSONP
   jsonpFetch({ action: "getStaffList" }, function (data) {
     if (!Array.isArray(data)) {
       namaSelect.innerHTML = '<option value="">⚠ Gagal memuat — refresh halaman</option>';
       return;
     }
-  }
-  // ── STATUS TOGGLE ──────────────────────────────────────
-  optHadir.addEventListener('click', () => {
-    selectedStatus = 'HADIR';
-    optHadir.classList.add('active');
-    optPulang.classList.remove('active');
     namaSelect.innerHTML = '<option value="">Pilih nama kamu...</option>';
     data.forEach(function (n) {
       var opt = document.createElement('option');
@@ -945,40 +641,19 @@ window.addEventListener('load', function () {
     namaSelect.innerHTML = '<option value="">⚠ Gagal memuat — refresh halaman</option>';
     console.error('Gagal load staff:', err);
   });
-  optPulang.addEventListener('click', () => {
-    selectedStatus = 'PULANG';
-    optPulang.classList.add('active');
-    optHadir.classList.remove('active');
+
   // Listener kamera
   document.getElementById('cameraInput').addEventListener('change', function () {
     handleFile(this);
   });
-  // ── CAMERA ─────────────────────────────────────────────
-  async function openCamera() {
-    try {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(t => t.stop());
-      }
-      cameraStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode, width: { ideal: 640 }, height: { ideal: 480 } },
-        audio: false
-      });
-      cameraVideo.srcObject = cameraStream;
-      cameraOverlay.classList.add('show');
-    } catch (err) {
-      Swal.fire('Kamera Error', 'Izin kamera ditolak atau tidak tersedia: ' + err.message, 'error');
-    }
-  }
+
   // Mulai GPS
   initGPS();
-  previewContainer.addEventListener('click', openCamera);
+
   // PWA install banner
   initPWA();
 });
-  btnBatal.addEventListener('click', () => {
-    if (cameraStream) cameraStream.getTracks().forEach(t => t.stop());
-    cameraOverlay.classList.remove('show');
-  });
+
 // ================================================================
 //  JSONP — Untuk GET request ke Apps Script (bypass CORS)
 // ================================================================
@@ -986,31 +661,14 @@ var jsonpCounter = 0;
 function jsonpFetch(params, onSuccess, onError) {
   var cbName = '__cb' + (++jsonpCounter) + '_' + Date.now();
   params.callback = cbName;
-  btnFlip.addEventListener('click', async () => {
-    facingMode = facingMode === 'user' ? 'environment' : 'user';
-    await openCamera();
-  });
+
   var qs = Object.keys(params).map(function (k) {
     return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
   }).join('&');
-  btnSnap.addEventListener('click', () => {
-    const canvas = document.createElement('canvas');
-    canvas.width  = cameraVideo.videoWidth;
-    canvas.height = cameraVideo.videoHeight;
-    const ctx = canvas.getContext('2d');
-    // Mirror untuk kamera depan
-    if (facingMode === 'user') {
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-    }
-    ctx.drawImage(cameraVideo, 0, 0);
-    capturedImage = canvas.toDataURL('image/jpeg', 0.8);
+
   var script = document.createElement('script');
   var done   = false;
-    imgPreview.src = capturedImage;
-    imgPreview.style.display = 'block';
-    placeholderText.style.display = 'none';
-    previewContainer.classList.add('has-photo');
+
   window[cbName] = function (data) {
     if (done) return;
     done = true;
@@ -1018,9 +676,7 @@ function jsonpFetch(params, onSuccess, onError) {
     if (script.parentNode) script.parentNode.removeChild(script);
     if (onSuccess) onSuccess(data);
   };
-    if (cameraStream) cameraStream.getTracks().forEach(t => t.stop());
-    cameraOverlay.classList.remove('show');
-  });
+
   script.onerror = function () {
     if (done) return;
     done = true;
@@ -1028,12 +684,7 @@ function jsonpFetch(params, onSuccess, onError) {
     if (script.parentNode) script.parentNode.removeChild(script);
     if (onError) onError(new Error('JSONP network error'));
   };
-  // ── GPS ────────────────────────────────────────────────
-  function initGPS() {
-    if (!navigator.geolocation) {
-      gpsBar.className = 'gps-bar error';
-      gpsText.textContent = 'GPS tidak didukung browser ini';
-      return;
+
   // Timeout 15 detik
   setTimeout(function () {
     if (!done) {
@@ -1042,36 +693,12 @@ function jsonpFetch(params, onSuccess, onError) {
       if (script.parentNode) script.parentNode.removeChild(script);
       if (onError) onError(new Error('JSONP timeout'));
     }
-    gpsText.textContent = 'Mencari lokasi GPS...';
-    navigator.geolocation.watchPosition(
-      (pos) => {
-        currentLat = pos.coords.latitude;
-        currentLon = pos.coords.longitude;
-        const acc  = Math.round(pos.coords.accuracy);
-        gpsBar.className = 'gps-bar locked';
-        gpsText.textContent = `GPS Terkunci (±${acc}m)`;
-      },
-      (err) => {
-        gpsBar.className = 'gps-bar error';
-        gpsText.textContent = 'GPS error: ' + err.message;
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
-    );
-  }
   }, 15000);
-  // ── SUBMIT ─────────────────────────────────────────────
-  btnKirim.addEventListener('click', async () => {
-    const namaStaff = selectNama.value;
-    const tipe      = selectTipe.value;
-    const isStoring = (tipe === 'STORING' || tipe === 'STORING MENDADAK');
+
   script.src = APPS_SCRIPT_URL + '?' + qs;
   document.head.appendChild(script);
 }
-    // Validasi nama
-    if (!namaStaff) {
-      Swal.fire('Perhatian', 'Pilih nama staff terlebih dahulu!', 'warning');
-      return;
-    }
+
 // ================================================================
 //  API POST — Untuk kirim data absensi ke Apps Script
 // ================================================================
@@ -1086,10 +713,7 @@ function apiPost(payload, onSuccess, onError) {
   .then(function (data) { if (onSuccess) onSuccess(data); })
   .catch(function (e)   { if (onError)   onError(e); });
 }
-    // Validasi GPS
-    if (!currentLat || !currentLon) {
-      Swal.fire('GPS Belum Siap', 'Tunggu GPS terkunci sebelum absen.', 'warning');
-      return;
+
 // ================================================================
 //  STATUS TOGGLE
 // ================================================================
@@ -1098,6 +722,7 @@ function pilihStatus(s) {
   var menit            = now.getHours() * 60 + now.getMinutes();
   var mulaiIstirahat   = 11 * 60 + 30; // 11:30
   var akhirIstirahat   = 13 * 60;      // 13:00
+
   // Validasi ISTIRAHAT: hanya 11:30 - 13:00
   if (s === 'ISTIRAHAT') {
     if (menit < mulaiIstirahat || menit >= akhirIstirahat) {
@@ -1110,16 +735,7 @@ function pilihStatus(s) {
       return; // Tidak lanjut, tidak ubah state
     }
   }
-    // Konfirmasi jika tidak ada foto
-    if (!capturedImage) {
-      const ok = await Swal.fire({
-        title: 'Tanpa Foto?',
-        text: 'Anda belum mengambil foto selfie. Lanjutkan?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#4b0082',
-        confirmButtonText: 'Ya, Lanjutkan',
-        cancelButtonText: 'Batal'
+
   // Validasi KEMBALI: tidak boleh sebelum 11:30 (boleh setelah 13:00 = terlambat)
   if (s === 'KEMBALI') {
     if (menit < mulaiIstirahat) {
@@ -1129,15 +745,11 @@ function pilihStatus(s) {
         icon: "warning",
         confirmButtonColor: "#6a00d4"
       });
-      if (!ok.isConfirmed) return;
       return;
     }
     // Lewat 13:00 tetap lolos (dikirim ke backend, akan dicatat sebagai terlambat)
   }
-    // Tampilkan loading
-    loadingOverlay.classList.add('show');
-    loadingText.textContent = 'Mengirim data absensi...';
-    btnKirim.disabled = true;
+
   // Update state & visual
   statusAbsen = s;
   var map = {
@@ -1146,33 +758,22 @@ function pilihStatus(s) {
     'ISTIRAHAT': 'optIstirahat',
     'KEMBALI':   'optKembali'
   };
-    try {
-      const payload = {
-        action     : 'prosesAbsen',
-        lat        : currentLat,
-        lon        : currentLon,
-        namaStaff  : namaStaff,
-        imageBase64: capturedImage || '',
-        status     : selectedStatus,
-        isStoring  : isStoring,
-        tipe       : tipe
-      };
+
   Object.keys(map).forEach(function (key) {
     var el = document.getElementById(map[key]);
     el.classList.remove('active', 'color-istirahat', 'color-kembali');
   });
-      const res    = await fetch(GAS_URL, {
-        method : 'POST',
-        body   : JSON.stringify(payload),
-        headers: { 'Content-Type': 'text/plain' }
+
   var activeEl = document.getElementById(map[s]);
   activeEl.classList.add('active');
   if (s === 'ISTIRAHAT') activeEl.classList.add('color-istirahat');
   if (s === 'KEMBALI')   activeEl.classList.add('color-kembali');
+
   // Tampilkan/sembunyikan info jam istirahat
   var infoBox = document.getElementById('breakInfo');
   infoBox.style.display = (s === 'ISTIRAHAT' || s === 'KEMBALI') ? 'flex' : 'none';
 }
+
 // ================================================================
 //  STORING TOGGLE
 // ================================================================
@@ -1189,6 +790,7 @@ function toggleStoring() {
     lbl.textContent = 'Di Bengkel (Radius Normal)';
   }
 }
+
 // ================================================================
 //  KAMERA + WATERMARK
 // ================================================================
@@ -1205,28 +807,33 @@ function handleFile(input) {
       canvas.height = Math.round(img.height * ratio);
       var ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
       var nama      = namaSelect.value || "-";
       var isStoring = document.getElementById('isStoring').checked;
       var tipeLabel = isStoring ? "STORING" : "BENGKEL";
       var now       = new Date();
       var jam       = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
       var tgl       = now.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+
       var baris = [
         "OTONIX SEMARANG",
         statusAbsen + "  —  " + tipeLabel,
         nama,
         tgl + "   " + jam
       ];
+
       var fontSize   = Math.max(14, Math.round(canvas.width / 26));
       var padding    = Math.round(fontSize * 0.65);
       var lineHeight = fontSize + padding;
       var boxH       = lineHeight * baris.length + padding * 2;
       var boxY       = canvas.height - boxH;
+
       ctx.fillStyle = 'rgba(61,0,153,0.80)';
       ctx.fillRect(0, boxY, canvas.width, boxH);
       ctx.fillStyle = '#9333ea';
       ctx.fillRect(0, boxY, canvas.width, Math.max(3, Math.round(fontSize * 0.22)));
       ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+
       baris.forEach(function (teks, i) {
         var y = boxY + padding + lineHeight * i;
         if (i === 0) {
@@ -1239,9 +846,7 @@ function handleFile(input) {
           ctx.fillStyle = 'white';            ctx.fillText(teks, padding, y);
         }
       });
-      const result = await res.json();
-      loadingOverlay.classList.remove('show');
-      btnKirim.disabled = false;
+
       base64Foto = canvas.toDataURL('image/jpeg', 0.82);
       var preview = document.getElementById('imgPreview');
       preview.src = base64Foto;
@@ -1254,26 +859,7 @@ function handleFile(input) {
   };
   reader.readAsDataURL(input.files[0]);
 }
-      if (typeof result === 'string' && (result.startsWith('GAGAL') || result.startsWith('ERROR'))) {
-        Swal.fire({
-          title: 'Gagal',
-          text : result,
-          icon : 'error',
-          confirmButtonColor: '#4b0082'
-        });
-      } else if (result && result.status === 'BERHASIL') {
-        Swal.fire({
-          title: '✅ Absen Berhasil!',
-          html : `<b>${result.nama}</b><br>Jam: <b>${result.jam}</b><br>${result.pesan}`,
-          icon : 'success',
-          confirmButtonColor: '#4b0082'
-        }).then(() => {
-          // Reset foto setelah sukses
-          capturedImage = null;
-          imgPreview.style.display  = 'none';
-          placeholderText.style.display = 'block';
-          previewContainer.classList.remove('has-photo');
-        });
+
 // ================================================================
 //  GPS
 // ================================================================
@@ -1282,6 +868,7 @@ function setGPS(state, teks) {
   bar.className = 'gps-bar' + (state ? ' ' + state : '');
   document.getElementById('gpsStatus').textContent = teks;
 }
+
 function initGPS() {
   if (!navigator.geolocation) {
     setGPS('error', 'GPS tidak didukung perangkat ini');
@@ -1289,6 +876,7 @@ function initGPS() {
   }
   setGPS('', '📡 Mengunci posisi GPS...');
   gpsLoading = true;
+
   // Gunakan watchPosition agar GPS selalu ter-update
   gpsWatchId = navigator.geolocation.watchPosition(
     function (pos) {
@@ -1303,7 +891,6 @@ function initGPS() {
         // User menolak izin
         setGPS('error', '⛔ Izin GPS ditolak — aktifkan di pengaturan browser');
       } else {
-        Swal.fire('Respons Tidak Dikenal', JSON.stringify(result), 'warning');
         setGPS('error', '⚠️ GPS lemah — pastikan GPS HP aktif');
         // Coba lagi dengan akurasi rendah
         navigator.geolocation.getCurrentPosition(
@@ -1320,16 +907,14 @@ function initGPS() {
     { enableHighAccuracy: true, timeout: 25000, maximumAge: 10000 }
   );
 }
-    } catch (err) {
-      loadingOverlay.classList.remove('show');
-      btnKirim.disabled = false;
-      Swal.fire('Error Jaringan', 'Gagal terhubung ke server. Periksa koneksi internet.\n' + err.message, 'error');
+
 // ================================================================
 //  SUBMIT ABSENSI
 // ================================================================
 function submitAbsensi() {
   var nama      = namaSelect.value;
   var isStoring = document.getElementById('isStoring').checked;
+
   // Validasi input
   if (!nama) {
     return Swal.fire({ title: "Nama Kosong", text: "Silakan pilih nama kamu!", icon: "warning", confirmButtonColor: "#6a00d4" });
@@ -1337,6 +922,7 @@ function submitAbsensi() {
   if (!base64Foto) {
     return Swal.fire({ title: "Foto Kosong", text: "Ambil foto terlebih dahulu!", icon: "warning", confirmButtonColor: "#6a00d4" });
   }
+
   if (!koordinatGPS) {
     if (gpsLoading) {
       return Swal.fire({ title: "Harap Tunggu", text: "GPS sedang mengunci lokasi, tunggu sebentar.", icon: "info", confirmButtonColor: "#6a00d4" });
@@ -1357,10 +943,13 @@ function submitAbsensi() {
     );
     return;
   }
+
   kirim(koordinatGPS.lat, koordinatGPS.lon, isStoring);
 }
+
 function kirim(lat, lon, isStoring) {
   tampilkanLoading("Mengirim data absensi...");
+
   apiPost({
     action     : "prosesAbsen",
     lat        : lat,
@@ -1387,8 +976,7 @@ function kirim(lat, lon, isStoring) {
     Swal.fire({ title: "Error Jaringan", text: "Gagal menghubungi server: " + err.message, icon: "error", confirmButtonColor: "#6a00d4" });
   });
 }
-  // ── LINK CUTI (placeholder — sesuaikan URL-nya) ────────
-  document.getElementById('linkCuti').addEventListener('click', (e) => {
+
 // ── Loading helpers ────────────────────────────────────────────
 function tampilkanLoading(teks) {
   document.getElementById('loadingText').textContent = teks || "Memproses...";
@@ -1399,6 +987,7 @@ function sembunyikanLoading() {
   document.getElementById('loadingOverlay').classList.remove('show');
   btnKirim.disabled = false;
 }
+
 // ================================================================
 //  PWA INSTALL BANNER
 // ================================================================
@@ -1407,13 +996,9 @@ function initPWA() {
   var banner         = document.getElementById('installBanner');
   var btnInstall     = document.getElementById('btnInstall');
   var btnClose       = document.getElementById('btnInstallClose');
+
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
-    Swal.fire({
-      title: 'Pengajuan Cuti / Izin',
-      text : 'Fitur ini akan diarahkan ke form pengajuan cuti.',
-      icon : 'info',
-      confirmButtonColor: '#4b0082'
     deferredPrompt = e;
     setTimeout(function () {
       if (!localStorage.getItem('pwa_dismissed')) {
@@ -1421,6 +1006,7 @@ function initPWA() {
       }
     }, 2000);
   });
+
   btnInstall.addEventListener('click', function () {
     if (!deferredPrompt) return;
     banner.classList.remove('show');
@@ -1430,18 +1016,18 @@ function initPWA() {
       deferredPrompt = null;
     });
   });
-  // ── INIT ────────────────────────────────────────────────
-  loadStaff();
-  initGPS();
+
   btnClose.addEventListener('click', function () {
     banner.classList.remove('show');
     localStorage.setItem('pwa_dismissed', '1');
     setTimeout(function () { localStorage.removeItem('pwa_dismissed'); }, 3 * 24 * 60 * 60 * 1000);
   });
+
   window.addEventListener('appinstalled', function () {
     banner.classList.remove('show');
     deferredPrompt = null;
   });
+
   // Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
@@ -1450,5 +1036,6 @@ function initPWA() {
   }
 }
 </script>
+
 </body>
 </html>
