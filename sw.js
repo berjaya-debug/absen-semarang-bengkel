@@ -4,7 +4,7 @@
 // ============================================================
 
 // ⚠️ GANTI VERSI INI SETIAP UPDATE
-const CACHE_NAME = 'absensi-semarang-v2';
+const CACHE_NAME = 'absensi-semarang-v3';
 
 const OFFLINE_URL = '/absen-semarang-bengkel/offline.html';
 
