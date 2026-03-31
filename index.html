@@ -640,91 +640,55 @@ window.onload = function () {
   ambilGPSBackground();
 };
 
-  document.addEventListener('DOMContentLoaded', function() {
-  const sekarang = new Date();
-  const hariIni = sekarang.getDay(); // 5 adalah Jumat
+  /* ── UBAH TEKS JAM TAMPILAN ─────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
   const displayJam = document.getElementById('jamTeksDisplay');
-
-  if (hariIni === 5) {
-    displayJam.innerText = "11.30 – 13.00";
-  } else {
-    displayJam.innerText = "12.00 – 13.00";
+  if (displayJam) {
+    displayJam.innerText = "11.30 – 13.00"; // Semua hari diseragamkan
   }
 });
 
-// Pastikan fungsi pilihStatus Anda juga memunculkan breakInfo
-function pilihStatus(status) {
-  const breakInfo = document.getElementById('breakInfo');
-  
-  // Tampilkan info hanya jika memilih ISTIRAHAT atau KEMBALI
-  if (status === 'ISTIRAHAT' || status === 'KEMBALI') {
-    breakInfo.style.display = 'block';
-  } else {
-    breakInfo.style.display = 'none';
-  }
-  
-  // Logika pilihStatus Anda yang lain...
-}
-
-/* ── JSONP ──────────────────────────────────────────────── */
-var jsonpCounter = 0;
-function jsonpFetch(params, onSuccess, onError) {
-  var cbName = '__cb' + (++jsonpCounter);
-  params.callback = cbName;
-  var url = APPS_SCRIPT_URL + '?' + Object.keys(params).map(function(k) {
-    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
-  }).join('&');
-  window[cbName] = function (data) {
-    delete window[cbName];
-    if (script.parentNode) script.parentNode.removeChild(script);
-    if (onSuccess) onSuccess(data);
-  };
-  var script = document.createElement('script');
-  script.src = url;
-  script.onerror = function () {
-    delete window[cbName];
-    if (script.parentNode) script.parentNode.removeChild(script);
-    if (onError) onError(new Error('Gagal memuat data'));
-  };
-  document.head.appendChild(script);
-}
-
-/* ── POST ────────────────────────────────────────────────── */
-function apiPost(payload, onSuccess, onError) {
-  fetch(APPS_SCRIPT_URL, {
-    method: "POST", redirect: "follow",
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify(payload)
-  })
-  .then(function (r) { return r.json(); })
-  .then(function (data) { if (onSuccess) onSuccess(data); })
-  .catch(function (e)   { if (onError)   onError(e); });
-}
-
-/* ── Status Toggle ──────────────────────────────────────── */
+/* ── STATUS TOGGLE & VALIDASI WAKTU MAKS/MIN ────────────────── */
 function pilihStatus(s) {
-  // Cek waktu untuk istirahat & kembali
-  var now  = new Date();
-  var jam  = now.getHours();
-  var mnt  = now.getMinutes();
-  var menit = jam * 60 + mnt;
-  var mulaiIstirahat = 12 * 60;      // 12:00
+  var now     = new Date();
+  var jam     = now.getHours();
+  var mnt     = now.getMinutes();
+  var menit   = jam * 60 + mnt;
+  
+  // Waktu Mulai & Berakhir Istirahat Diseragamkan
+  var mulaiIstirahat = 11 * 60 + 30; // 11:30 (Setiap Hari)
   var akhirIstirahat = 13 * 60;      // 13:00
 
-  if (s === 'ISTIRAHAT' || s === 'KEMBALI') {
+  if (s === 'ISTIRAHAT') {
+    // Tombol ISTIRAHAT diblokir jika sebelum 11:30 ATAU sudah lewat 13:00
     if (menit < mulaiIstirahat || menit >= akhirIstirahat) {
       Swal.fire({
-        title: "⏰ Di Luar Jam Istirahat",
-        html: "Absen <b>" + s + "</b> hanya bisa dilakukan<br> <b>Saat Jam Istirahat Saja</b> WIB.",
+        title: "⏰ Di Luar Jam",
+        html: "Absen <b>ISTIRAHAT</b> hanya diizinkan pada pukul<br> <b>11.30 – 13.00 WIB</b>.",
         icon: "warning",
         confirmButtonColor: "#6a00d4",
         background: "#fff",
         color: "#1a0040"
       });
-      return;
+      return; // Berhenti (Tidak tembus server)
     }
+  } else if (s === 'KEMBALI') {
+    // Tombol KEMBALI diblokir jika sebelum 11:30
+    if (menit < mulaiIstirahat) {
+      Swal.fire({
+        title: "⏰ Belum Masuk Waktu",
+        html: "Jam istirahat hari ini belum dimulai. Absen <b>KEMBALI</b> ditolak.",
+        icon: "warning",
+        confirmButtonColor: "#6a00d4",
+        background: "#fff",
+        color: "#1a0040"
+      });
+      return; // Berhenti (Tidak tembus server)
+    }
+    // Jika KEMBALI di klik di atas jam 13:00, SCRIPT AKAN TETAP LOLOS (Tembus Server)
   }
 
+  // --- MERUBAH VISUAL TOMBOL AKTIF ---
   statusAbsen = s;
   var ids = ['optHadir','optPulang','optIstirahat','optKembali'];
   ids.forEach(function(id) {
@@ -744,7 +708,7 @@ function pilihStatus(s) {
   if (s === 'ISTIRAHAT') el.classList.add('istirahat-color');
   if (s === 'KEMBALI')   el.classList.add('kembali-color');
 
-  // Tampilkan info jam istirahat
+  // Tampilkan info jam istirahat di UI Box Banner
   var info = document.getElementById('breakInfo');
   info.style.display = (s === 'ISTIRAHAT' || s === 'KEMBALI') ? 'flex' : 'none';
 }
