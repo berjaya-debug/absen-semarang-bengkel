@@ -626,19 +626,87 @@ var namaSelect = document.getElementById('namaStaff');
 var btnKirim   = document.getElementById('btnKirim');
 
 /* ── Init ───────────────────────────────────────────────── */
+/* ── Init ───────────────────────────────────────────────── */
 window.onload = function () {
   jsonpFetch({ action: "getStaffList" }, function (names) {
-    names.forEach(function (n) {
-      var opt = document.createElement('option');
-      opt.value = n; opt.textContent = n;
-      namaSelect.appendChild(opt);
-    });
+    // Tangkap kode Error Jika Code.gs bermasalah / belum di-New Deployment
+    if (names && names.error) {
+      Swal.fire({
+        title: "Koneksi Backend Gagal",
+        text: "Error dari Google Script: " + names.error,
+        icon: "error"
+      });
+      return; // Stop. Jangan paksa render
+    }
+    
+    // Render jika sukses (bentuk array)
+    if (Array.isArray(names)) {
+      names.forEach(function (n) {
+        var opt = document.createElement('option');
+        opt.value = n; opt.textContent = n;
+        namaSelect.appendChild(opt);
+      });
+    }
   });
+
   document.getElementById('cameraInput').addEventListener('change', function () {
     handleFile(this);
   });
+  
   ambilGPSBackground();
 };
+
+
+/* ── GPS + Penanganan Error Access ──────────────────────── */
+function ambilGPSBackground() {
+    if (!navigator.geolocation) { 
+      setGPS('error', 'GPS tidak didukung perangkat ini'); 
+      return; 
+    }
+    gpsLoading = true;
+    setGPS('', '📡 Mengunci posisi GPS...');
+  
+    navigator.geolocation.getCurrentPosition(
+      function (pos) { 
+        simpanKoordinat(pos); 
+        setTimeout(ambilGPSBackground, 30000); 
+      },
+      // GAGAL PERTAMA
+      function (err) {
+        if (err.code === 1) { // ERROR 1 = USER MENOLAK IZIN / HTTP GAK SECURE
+          gpsLoading = false;
+          koordinatGPS = null;
+          setGPS('error', '⛔ IZIN GPS DITOLAK. BUKA PENGATURAN BROWSER.');
+          Swal.fire({
+              title: "Izin Lokasi Ditolak",
+              text: "Browser Anda memblokir Akses Lokasi. Tolong aktifkan GPS HP dan Izinkan browser membaca lokasi, lalu masuk menggunakan koneksi HTTPS.",
+              icon: "warning"
+          });
+          return; // Jangan looping lagi
+        }
+        
+        // Jika error 2 atau 3 (Cuaca jelek/ Sinyal lambat), turunkan akurasi
+        navigator.geolocation.getCurrentPosition(
+          function (pos) { 
+            simpanKoordinat(pos); 
+            setTimeout(ambilGPSBackground, 30000); 
+          },
+          function (err2) {
+            gpsLoading = false; 
+            koordinatGPS = null;
+            setGPS('error', '⚠️ Jaringan GPS Lemah — Tap untuk coba lagi');
+            document.getElementById('gpsBar').onclick = function() { 
+              ambilGPSBackground(); this.onclick = null; 
+            };
+            setTimeout(ambilGPSBackground, 15000);
+          },
+          { enableHighAccuracy: false, timeout: 20000, maximumAge: 30000 }
+        );
+      },
+      { enableHighAccuracy: true, timeout: 25000, maximumAge: 30000 }
+    );
+  }
+
 
   /* ── UBAH TEKS JAM TAMPILAN ─────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function() {
